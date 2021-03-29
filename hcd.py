@@ -20,7 +20,8 @@ def gradient_sobel_filter(img):
 def harris_corner_detection(src_img, k, threshold, dist: 10):
     print('Starting Harris Corner Detection')
 
-    gray = rgb2gray(src_img)
+    img = np.copy(src_img)
+    gray = rgb2gray(img)
     blurred = ndimage.gaussian_filter(gray, sigma=1.0)
     sobel_x, sobel_y = gradient_sobel_filter(blurred)
 
@@ -34,8 +35,8 @@ def harris_corner_detection(src_img, k, threshold, dist: 10):
     corners = []
     max_count = 0
 
-    for i in range(1, int(src_img.shape[0] - 1)):
-        for j in range(1, int(src_img.shape[1] - 1)):
+    for i in range(1, int(img.shape[0] - 1)):
+        for j in range(1, int(img.shape[1] - 1)):
             window_x = xx[i - 4: i + 5, j - 4: j + 5]
             window_y = yy[i - 4: i + 5, j - 4: j + 5]
             window_xy = xy[i - 4: i + 5, j - 4: j + 5]
@@ -46,7 +47,7 @@ def harris_corner_detection(src_img, k, threshold, dist: 10):
 
             determinant = (sum_x * sum_y) - (sum_xy * sum_xy)
             trace = sum_x + sum_y
-            r = determinant - (k * trace * trace)
+            r = determinant - k * (trace * trace)
             corners.append((i, j, r))
 
             if r > max_count:
